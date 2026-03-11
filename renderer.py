@@ -1,8 +1,4 @@
-# =============================================================================
-# renderer.py — Math Curve Explorer
-# Stateless drawing utilities: grid and mathematical curve rendering.
-# Every function takes a pygame.Surface and draws onto it.
-# =============================================================================
+
 
 import numpy as np
 import pygame
@@ -11,11 +7,6 @@ import constants as C
 from maths import evaluate, math_to_canvas
 
 
-# -----------------------------------------------------------------------------
-# Grid
-# -----------------------------------------------------------------------------
-
-# Pre-built font objects (created on first use, then reused)
 _font_tick: pygame.font.Font | None = None
 _font_axis: pygame.font.Font | None = None
 

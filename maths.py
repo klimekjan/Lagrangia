@@ -1,8 +1,3 @@
-# =============================================================================
-# maths.py — Math Curve Explorer
-# Pure mathematical helpers. No pygame dependency — safe to unit-test alone.
-# =============================================================================
-
 import numpy as np
 from constants import (
     GRID_RANGE, CANVAS_W, CANVAS_H,
@@ -10,39 +5,26 @@ from constants import (
     EQUATIONS,
 )
 
-
-# -----------------------------------------------------------------------------
-# Coordinate conversion
-# -----------------------------------------------------------------------------
-
 def math_to_canvas(mx: float, my: float,
                    origin_x: int, origin_y: int, scale: float) -> tuple:
-    """Map a mathematical (x, y) point to pixel coordinates on the canvas."""
+
     return int(origin_x + mx * scale), int(origin_y - my * scale)
 
 
 def canvas_to_math(px: int, py: int,
                    origin_x: int, origin_y: int, scale: float) -> tuple:
-    """Map canvas pixel coordinates back to mathematical (x, y)."""
     return (px - origin_x) / scale, (origin_y - py) / scale
 
 
-# -----------------------------------------------------------------------------
-# Equation evaluator
-# -----------------------------------------------------------------------------
-
 def evaluate(eq_idx: int, x_arr: np.ndarray, params: list) -> np.ndarray:
-    """
-    Evaluate equation eq_idx over the array x_arr using params = [a, b, c, ...].
-    Returns a clipped float64 array; asymptote regions become NaN.
-    """
+
     p = params
     with np.errstate(divide="ignore", invalid="ignore", over="ignore"):
-        if   eq_idx == 0: y = p[0]*x_arr**2 + p[1]*x_arr + p[2]
-        elif eq_idx == 1: y = p[0] * np.sin(p[1]*x_arr + p[2])
-        elif eq_idx == 2: y = p[0] * np.cos(p[1]*x_arr + p[2])
-        elif eq_idx == 3: y = p[0]*x_arr**3 + p[1]*x_arr**2 + p[2]*x_arr + p[3]
-        elif eq_idx == 4: y = p[0]*x_arr + p[1]
+        if eq_idx == 0: y = p[0]*x_arr + p[1]
+        elif eq_idx == 1: y = p[0]*x_arr**2 + p[1]*x_arr + p[2]
+        elif eq_idx == 2: y = p[0]*x_arr**3 + p[1]*x_arr**2 + p[2]*x_arr + p[3]
+        elif eq_idx == 3: y = p[0] * np.sin(p[1]*x_arr + p[2])
+        elif eq_idx == 4: y = p[0] * np.cos(p[1]*x_arr + p[2])
         elif eq_idx == 5:
             raw = p[0] * np.tan(p[1]*x_arr + p[2])
             y   = np.where(np.abs(raw) > 50, np.nan, raw)   # hide asymptotes
@@ -62,11 +44,11 @@ def equation_string(eq_idx: int, params: list) -> str:
     def r(v): return f"{v:.2f}"                                      # plain
 
     p = params
-    if   eq_idx == 0: return f"y = {r(p[0])}x²  {s(p[1])}x  {s(p[2])}"
-    elif eq_idx == 1: return f"y = {r(p[0])}·sin({r(p[1])}x {s(p[2])})"
-    elif eq_idx == 2: return f"y = {r(p[0])}·cos({r(p[1])}x {s(p[2])})"
-    elif eq_idx == 3: return f"y = {r(p[0])}x³ {s(p[1])}x² {s(p[2])}x {s(p[3])}"
-    elif eq_idx == 4: return f"y = {r(p[0])}x  {s(p[1])}"
+    if eq_idx == 0: return f"y = {r(p[0])}x  {s(p[1])}"
+    elif eq_idx == 1: return f"y = {r(p[0])}x² + {s(p[1])}x + {s(p[2])}"
+    elif eq_idx == 2: return f"y = {r(p[0])}x³ {s(p[1])}x² {s(p[2])}x {s(p[3])}"
+    elif eq_idx == 3: return f"y = {r(p[0])}·sin({r(p[1])}x {s(p[2])})"
+    elif eq_idx == 4: return f"y = {r(p[0])}·cos({r(p[1])}x {s(p[2])})"
     elif eq_idx == 5: return f"y = {r(p[0])}·tan({r(p[1])}x {s(p[2])})"
     elif eq_idx == 6: return f"y = {r(p[0])}·|x {s(p[1])}|  {s(p[2])}"
     elif eq_idx == 7: return f"y = {r(p[0])}·e^({r(p[1])}x)  {s(p[2])}"

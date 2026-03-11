@@ -1,9 +1,3 @@
-# =============================================================================
-# aircanvas.py — Math Curve Explorer
-# Background thread: opens the webcam, runs MediaPipe Hands, and publishes
-# the index-finger-tip pixel position for the Challenge scene to consume.
-# =============================================================================
-
 import threading
 import time
 
@@ -11,30 +5,6 @@ import constants as C
 
 
 class AirCanvasThread(threading.Thread):
-    """
-    Captures the webcam on a background thread and tracks the tip of the
-    index finger using MediaPipe Hands.
-
-    Usage
-    -----
-        t = AirCanvasThread()
-        t.start()
-
-        # every frame:
-        pt = t.point          # → (px, py) or None if no hand visible
-
-        t.stop()              # signal the thread to exit, then join
-
-    The thread is a daemon so it will not prevent the process from exiting
-    even if stop() is never called.
-
-    Properties
-    ----------
-    point     : (int, int) | None — latest finger position in canvas pixels
-    ready     : bool              — True once the webcam opened successfully
-    error_msg : str               — human-readable error if initialisation failed
-    """
-
     def __init__(self) -> None:
         super().__init__(daemon=True)
         self._point:     tuple | None = None
@@ -43,14 +13,11 @@ class AirCanvasThread(threading.Thread):
         self._ready:     bool = False
         self._error_msg: str  = ""
 
-    # ── Public interface ──────────────────────────────────────────────────────
-
     def start(self) -> None:
         self._running = True
         super().start()
 
     def stop(self) -> None:
-        """Signal the thread to stop. Does not block; call join() if needed."""
         self._running = False
 
     @property
@@ -66,10 +33,7 @@ class AirCanvasThread(threading.Thread):
     def error_msg(self) -> str:
         return self._error_msg
 
-    # ── Thread body ───────────────────────────────────────────────────────────
-
     def run(self) -> None:
-        # Lazy import so missing libraries never crash the main app
         try:
             import cv2
             import mediapipe as mp

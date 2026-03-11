@@ -1,22 +1,25 @@
-# =============================================================================
-# constants.py — Math Curve Explorer
-# All project-wide constants: window size, colours, equation data, UI theme.
-# Nothing here has side effects — safe to import anywhere.
-# =============================================================================
 
-# -----------------------------------------------------------------------------
-# Window & layout
-# -----------------------------------------------------------------------------
+import pygame
+import os
 
-WINDOW_W  = 1280
-WINDOW_H  = 780
+pygame.init()
+
+monitor_info = pygame.display.Info()
+WINDOW_W = monitor_info.current_w
+WINDOW_H = monitor_info.current_h
 PANEL_W   = 320
 CANVAS_W  = WINDOW_W - PANEL_W
 CANVAS_H  = WINDOW_H
 
-GRID_RANGE = 10       # axis shows -10 .. +10
+GRID_RANGE = 10     # axis shows -10 .. +10
 GRID_STEP  = 1        # minor gridline every 1 unit
 FPS        = 60
+
+
+#file paths 
+BASE_DIR = os.path.dirname(__file__)
+ASSETS_DIR = os.path.join(BASE_DIR, "assets")
+FONTS_DIR = os.path.join(BASE_DIR, "fonts")
 
 # -----------------------------------------------------------------------------
 # Colours  (RGB)
@@ -55,10 +58,7 @@ C_GREEN        = (100, 255, 140)   # ≥ 85
 C_YELLOW       = (255, 220,  60)   # 60–84
 C_RED          = (255,  80, 100)   # < 60
 
-# -----------------------------------------------------------------------------
-# pygame_gui theme
-# -----------------------------------------------------------------------------
-
+#theme used by manager in SceneManager class
 UI_THEME = {
     "button": {
         "colours": {
@@ -98,36 +98,32 @@ UI_THEME = {
     },
 }
 
-# -----------------------------------------------------------------------------
-# Equation catalogue
-# -----------------------------------------------------------------------------
 
-# Names shown in Explorer dropdown; index is shared with PARAM_CONFIGS
+#equations in explorer mode
 EQUATIONS = [
-    "Parabola",      # 0   y = ax² + bx + c
-    "Sine",          # 1   y = a·sin(bx + c)
-    "Cosine",        # 2   y = a·cos(bx + c)
-    "Cubic",         # 3   y = ax³ + bx² + cx + d
-    "Linear",        # 4   y = ax + b
-    "Tangent",       # 5   y = a·tan(bx + c)
-    "Abs Value",     # 6   y = a|x + b| + c
-    "Exponential",   # 7   y = a·e^(bx) + c
+    "Linear",        #0   y = ax + b
+    "Parabola",      #1   y = ax² + bx + c
+    "Cubic",         #2   y = ax³ + bx² + cx + d
+    "Sine",          #3   y = a·sin(bx + c)
+    "Cosine",        #4   y = a·cos(bx + c)
+    "Tangent",       #5   y = a·tan(bx + c)
+    "Abs Value",     #6   y = a|x + b| + c
+    "Exponential",   #7   y = a·e^(bx) + c
 ]
 
-# Per-equation slider specs: (label, min, max, default)
 PARAM_CONFIGS = {
-    0: [("a", -3.0,  3.0,  1.0), ("b", -5.0, 5.0, 0.0), ("c", -5.0,  5.0,  0.0)],
-    1: [("a", -5.0,  5.0,  1.0), ("b", -4.0, 4.0, 1.0), ("c", -3.14, 3.14, 0.0)],
-    2: [("a", -5.0,  5.0,  1.0), ("b", -4.0, 4.0, 1.0), ("c", -3.14, 3.14, 0.0)],
-    3: [("a", -2.0,  2.0,  0.3), ("b", -3.0, 3.0, 0.0),
+    0: [("a", -5.0,  5.0,  1.0), ("b", -5.0, 5.0, 0.0)],
+    1: [("a", -3.0,  3.0,  1.0), ("b", -5.0, 5.0, 0.0), ("c", -5.0,  5.0,  0.0)],
+    2: [("a", -2.0,  2.0,  0.3), ("b", -3.0, 3.0, 0.0),
         ("c", -5.0,  5.0,  0.0), ("d", -5.0, 5.0, 0.0)],
-    4: [("a", -5.0,  5.0,  1.0), ("b", -5.0, 5.0, 0.0)],
+    3: [("a", -5.0,  5.0,  1.0), ("b", -4.0, 4.0, 1.0), ("c", -3.14, 3.14, 0.0)],
+    4: [("a", -5.0,  5.0,  1.0), ("b", -4.0, 4.0, 1.0), ("c", -3.14, 3.14, 0.0)],
     5: [("a", -3.0,  3.0,  1.0), ("b", -2.0, 2.0, 0.8), ("c", -1.5,  1.5,  0.0)],
     6: [("a", -5.0,  5.0,  1.0), ("b", -5.0, 5.0, 0.0), ("c", -5.0,  5.0,  0.0)],
     7: [("a", -3.0,  3.0,  1.0), ("b", -2.0, 2.0, 0.3), ("c", -5.0,  5.0,  0.0)],
 }
 
-# Challenge targets: (equation_index, params, display_string)
+# challenge (needs to be updated so it takes random functions)
 CHALLENGE_PRESETS = [
     (0, [ 1.0,  0.0,  0.0      ], "y = x²"),
     (0, [ 0.5,  0.0, -2.0      ], "y = 0.5x² - 2"),
